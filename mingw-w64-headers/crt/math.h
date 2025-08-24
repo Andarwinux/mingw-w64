@@ -193,15 +193,16 @@ extern "C" {
   double __cdecl log(double _X);
   double __cdecl log10(double _X);
   double __cdecl pow(double _X,double _Y);
-  double __cdecl sqrt(double _X);
+  //double __cdecl sqrt(double _X);
   double __cdecl ceil(double _X);
   double __cdecl floor(double _X);
 
 /* 7.12.7.2 The fabs functions: Double in C89 */
-  extern  float __cdecl fabsf (float x);
+  //extern  float __cdecl fabsf (float x);
   extern long double __cdecl fabsl (long double);
-  extern double __cdecl fabs (double _X);
+  //extern double __cdecl fabs (double _X);
 
+/*
 #ifndef __CRT__NO_INLINE
 #if !defined (__ia64__)
   __CRT_INLINE float __cdecl fabsf (float x)
@@ -238,11 +239,12 @@ extern "C" {
   }
 #endif
 #endif
+*/
 
   double __cdecl ldexp(double _X,int _Y);
   double __cdecl frexp(double _X,int *_Y);
-  double __cdecl modf(double _X,double *_Y);
-  double __cdecl fmod(double _X,double _Y);
+  //double __cdecl modf(double _X,double *_Y);
+  //double __cdecl fmod(double _X,double _Y);
 
   void __cdecl sincos (double __x, double *p_sin, double *p_cos);
   void __cdecl sincosl (long double __x, long double *p_sin, long double *p_cos);
@@ -816,16 +818,16 @@ __mingw_choose_expr (                                         \
   extern long double __cdecl logbl (long double);
 
 /* 7.12.6.12  Double in C89 */
-  extern float __cdecl modff (float, float*);
+  //extern float __cdecl modff (float, float*);
   extern long double __cdecl modfl (long double, long double*);
 
 /* 7.12.6.13 */
-  extern double __cdecl scalbn (double, int);
-  extern float __cdecl scalbnf (float, int);
+  //extern double __cdecl scalbn (double, int);
+  //extern float __cdecl scalbnf (float, int);
   extern long double __cdecl scalbnl (long double, int);
 
-  extern double __cdecl scalbln (double, long);
-  extern float __cdecl scalblnf (float, long);
+  //extern double __cdecl scalbln (double, long);
+  //extern float __cdecl scalblnf (float, long);
   extern long double __cdecl scalblnl (long double, long);
 
 /* 7.12.7.1 */
@@ -835,10 +837,10 @@ __mingw_choose_expr (                                         \
   extern long double __cdecl cbrtl (long double);
 
 /* 7.12.7.3  */
-  extern double __cdecl hypot (double, double) __MINGW_ATTRIB_DEPRECATED_MSVC2005; /* in libmoldname.a */
-  extern float __cdecl hypotf (float x, float y);
+  //extern double __cdecl hypot (double, double) __MINGW_ATTRIB_DEPRECATED_MSVC2005; /* in libmoldname.a */
+  //extern float __cdecl hypotf (float x, float y);
 #if !defined(__CRT__NO_INLINE) && !defined(_UCRT)
-  __CRT_INLINE float __cdecl hypotf (float x, float y) { return (float) hypot ((double)x, (double)y);}
+  //__CRT_INLINE float __cdecl hypotf (float x, float y) { return (float) hypot ((double)x, (double)y);}
 #endif
   extern long double __cdecl hypotl (long double, long double);
 
@@ -850,7 +852,7 @@ __mingw_choose_expr (                                         \
   extern long double __cdecl powl (long double, long double);
 
 /* 7.12.7.5 The sqrt functions. Double in C89. */
-  extern float __cdecl sqrtf (float);
+  //extern float __cdecl sqrtf (float);
   extern long double sqrtl(long double);
 
 /* 7.12.8.1 The erf functions  */
@@ -910,11 +912,11 @@ __MINGW_EXTENSION long long __cdecl llrintl (long double);
   extern long double __cdecl roundl (long double);
 
 /* 7.12.9.7  */
-  extern long __cdecl lround (double);
-  extern long __cdecl lroundf (float);
+  //extern long __cdecl lround (double);
+  //extern long __cdecl lroundf (float);
   extern long __cdecl lroundl (long double);
-  __MINGW_EXTENSION long long __cdecl llround (double);
-  __MINGW_EXTENSION long long __cdecl llroundf (float);
+  //__MINGW_EXTENSION long long __cdecl llround (double);
+  //__MINGW_EXTENSION long long __cdecl llroundf (float);
   __MINGW_EXTENSION long long __cdecl llroundl (long double);
   
 /* 7.12.9.8 */
@@ -924,7 +926,7 @@ __MINGW_EXTENSION long long __cdecl llrintl (long double);
   extern long double __cdecl truncl (long double);
 
 /* 7.12.10.1 Double in C89 */
-  extern float __cdecl fmodf (float, float);
+  //extern float __cdecl fmodf (float, float);
   extern long double __cdecl fmodl (long double, long double);
 
 /* 7.12.10.2 */ 
@@ -942,6 +944,7 @@ __MINGW_EXTENSION long long __cdecl llrintl (long double);
   extern float __cdecl copysignf (float, float);
   extern long double __cdecl copysignl (long double, long double);
 
+/*
 #ifndef __CRT__NO_INLINE
 #if !defined (__ia64__)
   __CRT_INLINE double __cdecl copysign (double x, double y)
@@ -960,6 +963,7 @@ __MINGW_EXTENSION long long __cdecl llrintl (long double);
   }
 #endif
 #endif
+*/
 
 /* 7.12.11.2 Return a NaN */
   extern double __cdecl nan(const char *tagp);
@@ -1460,3 +1464,107 @@ int __cdecl isnand32(_Decimal32 _X);
 
 #endif /* End _MATH_H_ */
 
+#undef fpclassify
+#undef fpclassifyf
+#undef fpclassifyl
+#undef isfinite
+#undef isfinitef
+#undef isfinitel
+#undef isinf
+#undef isinff
+#undef isinfl
+#undef isnan
+#undef isnanf
+#undef isnanl
+#undef isnormal
+#undef isnormalf
+#undef isnormall
+#undef signbit
+#undef signbitf
+#undef signbitl
+
+#define fpclassify(x) __builtin_fpclassify(FP_NAN, FP_INFINITE, FP_NORMAL, FP_SUBNORMAL, FP_ZERO, x)
+#define fpclassifyf(x) __builtin_fpclassify(FP_NAN, FP_INFINITE, FP_NORMAL, FP_SUBNORMAL, FP_ZERO, x)
+#define fpclassifyl(x) __builtin_fpclassify(FP_NAN, FP_INFINITE, FP_NORMAL, FP_SUBNORMAL, FP_ZERO, x)
+#define isfinite(x) __builtin_isfinite(x)
+#define isfinitef(x) __builtin_isfinite(x)
+#define isfinitel(x) __builtin_isfinite(x)
+#define isinf(x) __builtin_isinf(x)
+#define isinff(x) __builtin_isinf(x)
+#define isinfl(x) __builtin_isinf(x)
+#define isnan(x) __builtin_isnan(x)
+#define isnanf(x) __builtin_isnan(x)
+#define isnanl(x) __builtin_isnan(x)
+#define isnormal(x) __builtin_isnormal(x)
+#define isnormalf(x) __builtin_isnormal(x)
+#define isnormall(x) __builtin_isnormal(x)
+#define signbit(x) __builtin_signbit(x)
+#define signbitf(x) __builtin_signbit(x)
+#define signbitl(x) __builtin_signbit(x)
+
+#ifndef round_defined
+
+__attribute__((always_inline,hot)) static inline double    fabs (double x){return __builtin_fabs(x);}
+__attribute__((always_inline,hot)) static inline float     fabsf (float x){return __builtin_fabsf(x);}
+
+__attribute__((always_inline,hot)) static inline double    sqrt(double x){return __builtin_elementwise_sqrt(x);}
+__attribute__((always_inline,hot)) static inline float     sqrtf(float x){return __builtin_elementwise_sqrt(x);}
+
+__attribute__((always_inline,hot)) static inline long      lround (double x){return __builtin_elementwise_round(x);}
+__attribute__((always_inline,hot)) static inline long      lroundf (float x){return __builtin_elementwise_round(x);}
+__attribute__((always_inline,hot)) static inline long long llround (double x){return __builtin_elementwise_round(x);}
+__attribute__((always_inline,hot)) static inline long long llroundf (float x){return __builtin_elementwise_round(x);}
+
+__attribute__((always_inline,hot)) static inline double    scalbn(double x, int n){return __builtin_elementwise_ldexp(x, n);}
+__attribute__((always_inline,hot)) static inline float     scalbnf(float x, int n){return __builtin_elementwise_ldexp(x, n);}
+
+__attribute__((always_inline,hot)) static inline double    scalbln(double x, long n){return __builtin_elementwise_ldexp(x, n);}
+__attribute__((always_inline,hot)) static inline float     scalblnf(float x, long n){return __builtin_elementwise_ldexp(x, n);}
+
+__attribute__((always_inline,hot)) static inline double    hypot (double x, double y){return __builtin_elementwise_sqrt(x*x+y*y);}
+__attribute__((always_inline,hot)) static inline float     hypotf (float x, float y){return __builtin_elementwise_sqrt(x*x+y*y);}
+
+__attribute__((always_inline,hot)) static inline double    modf(double x, double *iptr){*iptr = __builtin_elementwise_trunc(x); return x - *iptr;}
+__attribute__((always_inline,hot)) static inline float     modff(float x, float *iptr){*iptr = __builtin_elementwise_trunc(x); return x - *iptr;}
+__attribute__((always_inline,hot)) static inline double    fmod(double x, double y){return (x - __builtin_elementwise_trunc(x / y) * y);}
+__attribute__((always_inline,hot)) static inline float     fmodf(float x, float y){return (x - __builtin_elementwise_trunc(x / y) * y);}
+
+#undef __builtin_lround
+#undef __builtin_lroundf
+#undef __builtin_llround
+#undef __builtin_llroundf
+
+#define __builtin_lround __builtin_elementwise_round
+#define __builtin_lroundf __builtin_elementwise_round
+#define __builtin_llround __builtin_elementwise_round
+#define __builtin_llroundf __builtin_elementwise_round
+
+#undef __builtin_scalbn
+#undef __builtin_scalbnf
+#undef __builtin_scalbln
+#undef __builtin_scalblnf
+
+#define __builtin_scalbn scalbn
+#define __builtin_scalbnf scalbnf
+#define __builtin_scalbln scalbln
+#define __builtin_scalblnf scalblnf
+
+#undef __builtin_hypot
+#undef __builtin_hypotf
+
+#define __builtin_hypot hypot
+#define __builtin_hypotf hypotf
+
+#undef __builtin_modf
+#undef __builtin_modff
+#undef __builtin_fmod
+#undef __builtin_fmodf
+
+#define __builtin_modf modf
+#define __builtin_modff modff
+#define __builtin_fmod fmod
+#define __builtin_fmodf fmodf
+
+#define round_defined
+
+#endif

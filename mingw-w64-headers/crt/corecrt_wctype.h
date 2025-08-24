@@ -56,25 +56,25 @@ extern _CRTIMP const unsigned short *_wctype;
  * Standard C functions.
  */
 
-_CRTIMP int __cdecl iswctype(wint_t _C,wctype_t _Type);
+int __cdecl iswctype(wint_t _C,wctype_t _Type);
 
-_CRTIMP int __cdecl iswalnum(wint_t _C);
-_CRTIMP int __cdecl iswalpha(wint_t _C);
-_CRTIMP int __cdecl iswblank(wint_t _C);
-_CRTIMP int __cdecl iswcntrl(wint_t _C);
-_CRTIMP int __cdecl iswdigit(wint_t _C);
-_CRTIMP int __cdecl iswgraph(wint_t _C);
-_CRTIMP int __cdecl iswlower(wint_t _C);
-_CRTIMP int __cdecl iswprint(wint_t _C);
-_CRTIMP int __cdecl iswpunct(wint_t _C);
-_CRTIMP int __cdecl iswspace(wint_t _C);
-_CRTIMP int __cdecl iswupper(wint_t _C);
-_CRTIMP int __cdecl iswxdigit(wint_t _C);
+int __cdecl iswalnum(wint_t _C);
+int __cdecl iswalpha(wint_t _C);
+int __cdecl iswblank(wint_t _C);
+int __cdecl iswcntrl(wint_t _C);
+int __cdecl iswdigit(wint_t _C);
+int __cdecl iswgraph(wint_t _C);
+int __cdecl iswlower(wint_t _C);
+int __cdecl iswprint(wint_t _C);
+int __cdecl iswpunct(wint_t _C);
+int __cdecl iswspace(wint_t _C);
+int __cdecl iswupper(wint_t _C);
+int __cdecl iswxdigit(wint_t _C);
 
 _CRTIMP wint_t __cdecl towlower(wint_t _C);
 _CRTIMP wint_t __cdecl towupper(wint_t _C);
 
-#if !defined(_CTYPE_DISABLE_MACROS) && !defined(__cplusplus)
+#if !defined(_CTYPE_DISABLE_MACROS) && !defined(__cplusplus) && 0
 #define iswalnum(_c)  (iswctype(_c,_ALPHA|_DIGIT))
 #define iswalpha(_c)  (iswctype(_c,_ALPHA))
 #define iswblank(_c)  (iswctype(_c,_BLANK))

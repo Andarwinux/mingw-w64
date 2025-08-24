@@ -264,10 +264,10 @@ extern
   __MINGW_UCRT_ASM_CALL(vsnprintf) __MINGW_NOTHROW;
 
 #ifdef _UCRT
-  int __cdecl __stdio_common_vsprintf(unsigned __int64 options, char *str, size_t len, const char *format, _locale_t locale, va_list valist);
-  int __cdecl __stdio_common_vfprintf(unsigned __int64 options, FILE *file, const char *format, _locale_t locale, va_list valist);
-  int __cdecl __stdio_common_vsscanf(unsigned __int64 options, const char *input, size_t length, const char *format, _locale_t locale, va_list valist);
-  int __cdecl __stdio_common_vfscanf(unsigned __int64 options, FILE *file, const char *format, _locale_t locale, va_list valist);
+  __declspec(dllimport) int __cdecl __stdio_common_vsprintf(unsigned __int64 options, char *str, size_t len, const char *format, _locale_t locale, va_list valist);
+  __declspec(dllimport) int __cdecl __stdio_common_vfprintf(unsigned __int64 options, FILE *file, const char *format, _locale_t locale, va_list valist);
+  __declspec(dllimport) int __cdecl __stdio_common_vsscanf(unsigned __int64 options, const char *input, size_t length, const char *format, _locale_t locale, va_list valist);
+  __declspec(dllimport) int __cdecl __stdio_common_vfscanf(unsigned __int64 options, FILE *file, const char *format, _locale_t locale, va_list valist);
 #endif
 
 #undef __MINGW_PRINTF_FORMAT
@@ -422,8 +422,8 @@ int vsnprintf (char *__stream, size_t __n, const char *__format, __builtin_va_li
 }
 
 /* Override __builtin_printf-routines ... Kludge for libstdc++ ...*/
-#define __builtin_vsnprintf __mingw_vsnprintf
-#define __builtin_vsprintf __mingw_vsprintf
+//#define __builtin_vsnprintf __mingw_vsnprintf
+//#define __builtin_vsprintf __mingw_vsprintf
 
 /* #endif */ /* __NO_ISOCEXT */
 
@@ -653,7 +653,7 @@ int vsnprintf (char *__stream, size_t __n, const char *__format, __builtin_va_li
 #endif
   __MINGW_ATTRIB_PURE
   __MINGW_MS_PRINTF(1, 0) __MINGW_ATTRIB_NONNULL(1)
-  _CRTIMP int __cdecl _vscprintf(const char * __restrict__ _Format,va_list _ArgList);
+  int __cdecl _vscprintf(const char * __restrict__ _Format,va_list _ArgList);
   FILE *__cdecl tmpfile(void) __MINGW_ATTRIB_DEPRECATED_SEC_WARN;
   FILE *__cdecl tmpfile64(void);
   char *__cdecl tmpnam(char *_Buffer);
@@ -965,10 +965,10 @@ int vsprintf (char * __restrict__ __stream, const char * __restrict__ __format, 
   __MINGW_UCRT_ASM_CALL(vsnwprintf);
 
 #ifdef _UCRT
-  int __cdecl __stdio_common_vswprintf(unsigned __int64 options, wchar_t *str, size_t len, const wchar_t *format, _locale_t locale, va_list valist);
-  int __cdecl __stdio_common_vfwprintf(unsigned __int64 options, FILE *file, const wchar_t *format, _locale_t locale, va_list valist);
-  int __cdecl __stdio_common_vswscanf(unsigned __int64 options, const wchar_t *input, size_t length, const wchar_t *format, _locale_t locale, va_list valist);
-  int __cdecl __stdio_common_vfwscanf(unsigned __int64 options, FILE *file, const wchar_t *format, _locale_t locale, va_list valist);
+  __declspec(dllimport) int __cdecl __stdio_common_vswprintf(unsigned __int64 options, wchar_t *str, size_t len, const wchar_t *format, _locale_t locale, va_list valist);
+  __declspec(dllimport) int __cdecl __stdio_common_vfwprintf(unsigned __int64 options, FILE *file, const wchar_t *format, _locale_t locale, va_list valist);
+  __declspec(dllimport) int __cdecl __stdio_common_vswscanf(unsigned __int64 options, const wchar_t *input, size_t length, const wchar_t *format, _locale_t locale, va_list valist);
+  __declspec(dllimport) int __cdecl __stdio_common_vfwscanf(unsigned __int64 options, FILE *file, const wchar_t *format, _locale_t locale, va_list valist);
 #endif
 
 #if __USE_MINGW_ANSI_STDIO && !defined(_CRTBLD)
@@ -1130,16 +1130,16 @@ int vsnwprintf (wchar_t *__stream, size_t __n, const wchar_t *__format, __builti
   _CRTIMP wchar_t *__cdecl _getws(wchar_t *_String) __MINGW_ATTRIB_DEPRECATED_SEC_WARN;
   _CRTIMP int __cdecl _putws(const wchar_t *_Str);
 
-  _CRTIMP int __cdecl _scwprintf(const wchar_t * __restrict__ _Format,...);
+  int __cdecl _scwprintf(const wchar_t * __restrict__ _Format,...);
 #ifndef _UCRT
   _CRTIMP int __cdecl _swprintf_c(wchar_t * __restrict__ _DstBuf,size_t _SizeInWords,const wchar_t * __restrict__ _Format,...);
   _CRTIMP int __cdecl _vswprintf_c(wchar_t * __restrict__ _DstBuf,size_t _SizeInWords,const wchar_t * __restrict__ _Format,va_list _ArgList);
 #endif /* _UCRT */
-  _CRTIMP int __cdecl _snwprintf(wchar_t * __restrict__ _Dest,size_t _Count,const wchar_t * __restrict__ _Format,...) __MINGW_ATTRIB_DEPRECATED_SEC_WARN;
-  _CRTIMP int __cdecl _vsnwprintf(wchar_t * __restrict__ _Dest,size_t _Count,const wchar_t * __restrict__ _Format,va_list _Args) __MINGW_ATTRIB_DEPRECATED_SEC_WARN;
-  _CRTIMP int __cdecl _vscwprintf(const wchar_t * __restrict__ _Format,va_list _ArgList);
-  _CRTIMP int __cdecl _swprintf(wchar_t * __restrict__ _Dest,const wchar_t * __restrict__ _Format,...);
-  _CRTIMP int __cdecl _vswprintf(wchar_t * __restrict__ _Dest,const wchar_t * __restrict__ _Format,va_list _Args);
+  int __cdecl _snwprintf(wchar_t * __restrict__ _Dest,size_t _Count,const wchar_t * __restrict__ _Format,...) __MINGW_ATTRIB_DEPRECATED_SEC_WARN;
+  int __cdecl _vsnwprintf(wchar_t * __restrict__ _Dest,size_t _Count,const wchar_t * __restrict__ _Format,va_list _Args) __MINGW_ATTRIB_DEPRECATED_SEC_WARN;
+  int __cdecl _vscwprintf(const wchar_t * __restrict__ _Format,va_list _ArgList);
+  int __cdecl _swprintf(wchar_t * __restrict__ _Dest,const wchar_t * __restrict__ _Format,...);
+  int __cdecl _vswprintf(wchar_t * __restrict__ _Dest,const wchar_t * __restrict__ _Format,va_list _Args);
 
 #ifndef RC_INVOKED
 #include <swprintf.inl>

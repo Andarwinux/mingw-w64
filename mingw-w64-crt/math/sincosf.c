@@ -6,7 +6,7 @@
 
 #include <math.h>
 
-void sincosf(float x, float *s, float *c)
+__attribute__((no_builtin)) void sincosf(float x, float *s, float *c)
 {
     *s = sinf(x);
     *c = cosf(x);

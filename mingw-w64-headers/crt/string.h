@@ -43,7 +43,7 @@ extern "C" {
   int __cdecl strcmp(const char *_Str1,const char *_Str2);
   size_t __cdecl strlen(const char *_Str);
   size_t __cdecl strnlen(const char *_Str,size_t _MaxCount);
-  void *__cdecl memmove(void *_Dst,const void *_Src,size_t _Size) __MINGW_ATTRIB_DEPRECATED_SEC_WARN;
+  _CRTIMP void *__cdecl memmove(void *_Dst,const void *_Src,size_t _Size) __MINGW_ATTRIB_DEPRECATED_SEC_WARN;
 #if defined(_DEBUG) && defined(_CRTDBG_MAP_ALLOC)
 #pragma push_macro("_strdup")
 #undef _strdup
@@ -94,7 +94,7 @@ extern "C" {
   _CRTIMP char *__cdecl _strrev(char *_Str);
   size_t __cdecl strspn(const char *_Str,const char *_Control);
   _CONST_RETURN char *__cdecl strstr(const char *_Str,const char *_SubStr);
-  _CRTIMP char *__cdecl strtok(char * __restrict__ _Str,const char * __restrict__ _Delim) __MINGW_ATTRIB_DEPRECATED_SEC_WARN;
+  char *__cdecl strtok(char * __restrict__ _Str,const char * __restrict__ _Delim) __MINGW_ATTRIB_DEPRECATED_SEC_WARN;
 #pragma push_macro("strtok_r")
 #undef strtok_r
   char *strtok_r(char * __restrict__ _Str, const char * __restrict__ _Delim, char ** __restrict__ __last);
@@ -241,3 +241,11 @@ wchar_t * wcscat(wchar_t * __restrict__ __dst, const wchar_t * __restrict__ __sr
 #endif /* __MINGW_FORTIFY_LEVEL > 0 */
 
 #endif
+
+#undef _strnicmp
+#undef _stricmp
+#define _strnicmp strncasecmp
+#define _stricmp strcasecmp
+
+#undef _strdup
+#define _strdup strdup

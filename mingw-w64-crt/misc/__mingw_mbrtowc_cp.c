@@ -93,7 +93,7 @@ size_t __mingw_mbrtowc_cp (
     conversion_state.bytes[1] = mbs[0];
     bytes_consumed = 1;
     length = 2;
-  } else if (mb_cur_max == 2 && __mingw_isleadbyte_cp ((unsigned char) mbs[0], cp)) {
+  } else if (mb_cur_max == 2 && isleadbyte ((unsigned char) mbs[0])) {
     conversion_state.bytes[0] = mbs[0];
 
     /* We need to examine mbs[1] */
