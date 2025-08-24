@@ -16,21 +16,21 @@ extern "C" {
  * Standard C functions.
  */
 
-_CRTIMP int __cdecl isalnum(int _C);
-_CRTIMP int __cdecl isalpha(int _C);
-_CRTIMP int __cdecl isblank(int _C);
-_CRTIMP int __cdecl iscntrl(int _C);
-_CRTIMP int __cdecl isdigit(int _C);
-_CRTIMP int __cdecl isgraph(int _C);
-_CRTIMP int __cdecl islower(int _C);
-_CRTIMP int __cdecl isprint(int _C);
-_CRTIMP int __cdecl ispunct(int _C);
-_CRTIMP int __cdecl isspace(int _C);
-_CRTIMP int __cdecl isupper(int _C);
-_CRTIMP int __cdecl isxdigit(int _C);
+int __cdecl isalnum(int _C);
+int __cdecl isalpha(int _C);
+int __cdecl isblank(int _C);
+int __cdecl iscntrl(int _C);
+int __cdecl isdigit(int _C);
+int __cdecl isgraph(int _C);
+int __cdecl islower(int _C);
+int __cdecl isprint(int _C);
+int __cdecl ispunct(int _C);
+int __cdecl isspace(int _C);
+int __cdecl isupper(int _C);
+int __cdecl isxdigit(int _C);
 
-_CRTIMP int __cdecl tolower(int _C);
-_CRTIMP int __cdecl toupper(int _C);
+int __cdecl tolower(int _C);
+int __cdecl toupper(int _C);
 
 /**
  * Locale-specific versions of Standard C functions.

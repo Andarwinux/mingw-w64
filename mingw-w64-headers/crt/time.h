@@ -247,19 +247,19 @@ errno_t __CRTDECL ctime_s(char *_Buf,size_t _SizeInBytes,const time_t *_Time) __
 time_t __CRTDECL mktime(struct tm *_Tm) __MINGW_ASM_CALL(_mktime32);
 time_t __CRTDECL _mkgmtime(struct tm *_Tm) __MINGW_ASM_CALL(_mkgmtime32);
 #else
-time_t __CRTDECL time(time_t *_Time) __MINGW_ASM_CALL(_time64);
+__CRT_INLINE time_t time(time_t *_Time){return _time64(_Time);}
 #ifdef _UCRT
 int __CRTDECL timespec_get(struct timespec* _Ts, int _Base) __MINGW_ASM_CALL(_timespec64_get);
 #endif
-double __CRTDECL difftime(time_t _Time1,time_t _Time2) __MINGW_ASM_CALL(_difftime64);
-struct tm *__CRTDECL localtime(const time_t *_Time) __MINGW_ASM_CALL(_localtime64);
-errno_t __CRTDECL localtime_s(struct tm *_Tm,const time_t *_Time) __MINGW_ASM_CALL(_localtime64_s);
-struct tm *__CRTDECL gmtime(const time_t *_Time) __MINGW_ASM_CALL(_gmtime64);
-errno_t __CRTDECL gmtime_s(struct tm *_Tm, const time_t *_Time) __MINGW_ASM_CALL(_gmtime64_s);
-char *__CRTDECL ctime(const time_t *_Time) __MINGW_ASM_CALL(_ctime64);
-errno_t __CRTDECL ctime_s(char *_Buf,size_t _SizeInBytes,const time_t *_Time) __MINGW_ASM_CALL(_ctime64_s);
-time_t __CRTDECL mktime(struct tm *_Tm) __MINGW_ASM_CALL(_mktime64);
-time_t __CRTDECL _mkgmtime(struct tm *_Tm) __MINGW_ASM_CALL(_mkgmtime64);
+__CRT_INLINE double difftime(time_t _Time1,time_t _Time2){return _difftime64(_Time1, _Time2);}
+__CRT_INLINE struct tm *localtime(const time_t *_Time){return _localtime64(_Time);}
+__CRT_INLINE errno_t localtime_s(struct tm *_Tm,const time_t *_Time){return _localtime64_s(_Tm, _Time);}
+__CRT_INLINE struct tm *gmtime(const time_t *_Time){return _gmtime64(_Time);}
+__CRT_INLINE errno_t gmtime_s(struct tm *_Tm, const time_t *_Time){return _gmtime64_s(_Tm, _Time);}
+__CRT_INLINE char *ctime(const time_t *_Time){return _ctime64(_Time);}
+__CRT_INLINE errno_t ctime_s(char *_Buf,size_t _SizeInBytes,const time_t *_Time){return _ctime64_s(_Buf, _SizeInBytes, _Time);}
+__CRT_INLINE time_t mktime(struct tm *_Tm){return _mktime64(_Tm);}
+__CRT_INLINE time_t _mkgmtime(struct tm *_Tm){return _mkgmtime64(_Tm);}
 #endif
 #endif /* _CRTBLD */
 

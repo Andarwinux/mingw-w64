@@ -257,7 +257,7 @@ extern "C" {
 	   So far, Cygwin is the only POSIX system using this header file.
 	   If that ever changes, make sure to tweak the guarding ifndef. */
     __MACHINE(int __cdecl abs(int))
-    __MACHINEX64(double ceil(double))
+    //__MACHINEX64(double ceil(double))
     __MACHINE(long __cdecl labs(long))
     __MACHINECE(_CONST_RETURN void *__cdecl memchr(const void *,int,size_t))
     __MACHINE(int __cdecl memcmp(const void *,const void *,size_t))
@@ -289,7 +289,7 @@ extern "C" {
     __MACHINE(__MINGW_EXTENSION unsigned __int64 __cdecl _byteswap_uint64(unsigned __int64 value))
     __MACHINECE(void __CacheRelease(void *))
     __MACHINECE(void __CacheWriteback(void *))
-    __MACHINECE(double ceil(double))
+    //__MACHINECE(double ceil(double))
     __MACHINECE(__MINGW_EXTENSION double _CopyDoubleFromInt64(__int64))
     __MACHINECE(float _CopyFloatFromInt32(__int32))
     __MACHINECE(__MINGW_EXTENSION __int64 _CopyInt64FromDouble(double))
