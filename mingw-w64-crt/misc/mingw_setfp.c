@@ -115,7 +115,7 @@ void __mingw_setfp_sse( unsigned int *cw, unsigned int cw_mask, unsigned int *sw
 void __mingw_setfp( unsigned int *cw, unsigned int cw_mask,
                     unsigned int *sw, unsigned int sw_mask )
 {
-#if defined(__arm64ec__)
+#if defined(__arm64ec__) || defined(__x86_64__)
     __mingw_setfp_sse(cw, cw_mask, sw, sw_mask);
 #elif defined(__i386__) || defined(__x86_64__)
     unsigned long oldcw = 0, newcw = 0;
