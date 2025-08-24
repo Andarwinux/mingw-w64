@@ -66,12 +66,12 @@ extern "C" {
 #endif
 #endif /* _NO_W32_PSEUDO_MODIFIERS */
 
-#undef far
-#undef near
+//#undef far
+//#undef near
 #undef pascal
 
-#define far
-#define near
+//#define far
+//#define near
 #if defined(_ARM_)
 #define pascal
 #else

@@ -17,9 +17,8 @@
 #include <sect_attribs.h>
 #include <locale.h>
 
-extern void __cdecl __mingw_do_global_ctors (void);
-extern void __cdecl __mingw_do_global_dtors (void);
-extern void _pei386_runtime_relocator (void);
+extern void __main ();
+//extern void _pei386_runtime_relocator (void);
 extern _PIFV __xi_a[];
 extern _PIFV __xi_z[];
 extern _PVFV __xc_a[];
@@ -27,17 +26,11 @@ extern _PVFV __xc_z[];
 
 
 /* TLS initialization hook.  */
-const PIMAGE_TLS_CALLBACK __dyn_tls_init_callback __attribute__((common)); /* tentative */
-
-void (WINAPI *const __mingw_TLScallback_ptr)(HANDLE,DWORD,LPVOID) __attribute__((common)); /* tentative */
-const int __mingw_TLScallback_caller_provider = 1; /* crtdll.c calls __mingw_TLScallback_ptr */
-
-WINBOOL (WINAPI *const __mingw_atexit_tls_callback_ptr)(HANDLE,DWORD,LPVOID) __attribute__((common)); /* tentative */
-const int __mingw_atexit_tls_callback_caller_provider = 1; /* crtdll.c calls __mingw_atexit_tls_callback_ptr */
-
-int (__cdecl *const __mingw_dll_atexit_table_func_ptr)(int) __attribute__((common)); /* tentative */
+extern const PIMAGE_TLS_CALLBACK __dyn_tls_init_callback;
 
 static int __proc_attached = 0;
+
+static _onexit_table_t atexit_table;
 
 extern int __mingw_app_type;
 
@@ -75,28 +68,15 @@ WINBOOL WINAPI _CRT_INIT (HANDLE hDllHandle, DWORD dwReason, LPVOID lpreserved)
 	{
 	  __native_startup_state = __initializing;
 	  
-	  _pei386_runtime_relocator ();
-	  if (__mingw_TLScallback_ptr != NULL)
-	    __mingw_TLScallback_ptr (hDllHandle, dwReason, lpreserved);
-	  if (__mingw_dll_atexit_table_func_ptr != NULL)
-	    {
-	      ret = __mingw_dll_atexit_table_func_ptr (0 /*init*/);
-	      if (ret != 0)
-		goto i__leave;
-	    }
-	  if (__mingw_atexit_tls_callback_ptr != NULL)
-	    {
-	      if (! __mingw_atexit_tls_callback_ptr (hDllHandle, dwReason, lpreserved))
-		{
-		  ret = 1;
-		  goto i__leave;
-		}
-	    }
+	  //_pei386_runtime_relocator ();
+	  ret = _initialize_onexit_table (&atexit_table);
+	  if (ret != 0)
+	    goto i__leave;
 	  ret = _initterm_e (__xi_a, __xi_z);
 	  if (ret != 0)
 	    goto i__leave;
 	  _initterm (__xc_a, __xc_z);
-	  __mingw_do_global_ctors ();
+	  __main ();
 
 	  __native_startup_state = __initialized;
 	}
@@ -107,8 +87,6 @@ i__leave:
 	}
       if (ret != 0)
 	{
-	  if (__mingw_atexit_tls_callback_ptr != NULL)
-	    __mingw_atexit_tls_callback_ptr (hDllHandle, DLL_PROCESS_DETACH, lpreserved);
 	  return FALSE;
 	}
       if (__dyn_tls_init_callback != NULL)
@@ -138,29 +116,12 @@ i__leave:
 	}
       else
 	{
-	  if (__mingw_TLScallback_ptr != NULL)
-	    __mingw_TLScallback_ptr (hDllHandle, dwReason, lpreserved);
-	  if (__mingw_atexit_tls_callback_ptr != NULL)
-	    __mingw_atexit_tls_callback_ptr (hDllHandle, dwReason, lpreserved);
-	  if (__mingw_dll_atexit_table_func_ptr != NULL)
-	    __mingw_dll_atexit_table_func_ptr (1 /*execute*/);
-	  __mingw_do_global_dtors ();
-
+          _execute_onexit_table(&atexit_table);
 	  __native_startup_state = __uninitialized;
 	}
       if (! nested)
 	{
 	  (void) InterlockedExchangePointer (&__native_startup_lock, NULL);
-	}
-    }
-  else if (dwReason == DLL_THREAD_DETACH)
-    {
-      if (__mingw_TLScallback_ptr != NULL)
-	 __mingw_TLScallback_ptr (hDllHandle, dwReason, lpreserved);
-      if (__mingw_atexit_tls_callback_ptr != NULL)
-	{
-	  if (! __mingw_atexit_tls_callback_ptr (hDllHandle, dwReason, lpreserved))
-	    return FALSE;
 	}
     }
   return TRUE;
@@ -173,7 +134,7 @@ WINBOOL WINAPI DllMainCRTStartup (HANDLE, DWORD, LPVOID);
    opts in DllMain or in functions called from DllMain.  */
 __attribute__((force_align_arg_pointer))
 #endif
-__attribute__((used)) /* required due to GNU LD bug: https://sourceware.org/bugzilla/show_bug.cgi?id=30300 */
+//__attribute__((used)) /* required due to GNU LD bug: https://sourceware.org/bugzilla/show_bug.cgi?id=30300 */
 WINBOOL WINAPI
 DllMainCRTStartup (HANDLE hDllHandle, DWORD dwReason, LPVOID lpreserved)
 {
@@ -208,6 +169,13 @@ DllMainCRTStartup (HANDLE hDllHandle, DWORD dwReason, LPVOID lpreserved)
 i__leave:
   __native_dllmain_reason = UINT_MAX;
   return retcode ;
+}
+
+int __cdecl atexit (_PVFV func)
+{
+    /* Do not use msvcrt's atexit() or UCRT's _crt_atexit() function as it
+     * cannot be called from DLL library which may be unloaded at runtime. */
+    return _register_onexit_function(&atexit_table, (_onexit_t)func);
 }
 
 char __mingw_module_is_dll = 1;

@@ -12,7 +12,7 @@
 #ifdef IS_32
 #define DBTFAR
 #else
-#define DBTFAR far
+#define DBTFAR
 #endif
 
 #ifndef _WCHAR_T_DEFINED

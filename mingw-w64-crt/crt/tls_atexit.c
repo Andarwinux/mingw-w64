@@ -104,15 +104,13 @@ static void WINAPI tls_atexit_callback(HANDLE __UNUSED_PARAM(hDllHandle), DWORD 
   }
 }
 
-static WINBOOL WINAPI tls_callback(HANDLE hDllHandle, DWORD dwReason, LPVOID __UNUSED_PARAM(lpReserved)) {
+static void WINAPI tls_callback(HANDLE hDllHandle, DWORD dwReason, LPVOID __UNUSED_PARAM(lpReserved)) {
   switch (dwReason) {
   case DLL_PROCESS_ATTACH:
     if (inited == 0) {
-      tls_dtors_slot = TlsAlloc();
-      if (tls_dtors_slot == TLS_OUT_OF_INDEXES)
-        return FALSE;
       InitializeCriticalSection(&lock);
       __dso_handle = hDllHandle;
+      tls_dtors_slot = TlsAlloc();
       /*
        * We can only call _register_thread_local_exe_atexit_callback once
        * in a process; if we call it a second time the process terminates.
@@ -168,10 +166,10 @@ static WINBOOL WINAPI tls_callback(HANDLE hDllHandle, DWORD dwReason, LPVOID __U
     run_thread_dtor_list();
     break;
   }
-  return TRUE;
 }
-WINBOOL (WINAPI *const __mingw_atexit_tls_callback_ptr)(HANDLE,DWORD,LPVOID) = tls_callback;
 
-/* Force inclusion of code which calls __mingw_atexit_tls_callback */
-extern const int __mingw_atexit_tls_callback_caller_provider;
-static __attribute__((used)) const void *const _include_mingw_atexit_tls_callback_caller = &__mingw_atexit_tls_callback_caller_provider;
+static _CRTALLOC(".CRT$XLB") PIMAGE_TLS_CALLBACK __xl_b = tls_callback;
+
+/* Force tlssup.c (_tls_used symbol for .tls linker section) to be linked.  */
+extern const IMAGE_TLS_DIRECTORY _tls_used;
+static __attribute__((used)) const IMAGE_TLS_DIRECTORY *const _include_tls_used = &_tls_used;

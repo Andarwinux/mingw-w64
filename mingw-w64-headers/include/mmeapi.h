@@ -495,7 +495,7 @@ typedef struct midihdr_tag {
   DWORD dwBytesRecorded;
   DWORD_PTR dwUser;
   DWORD dwFlags;
-  struct midihdr_tag far *lpNext;
+  struct midihdr_tag *lpNext;
   DWORD_PTR reserved;
   DWORD dwOffset;
   DWORD_PTR dwReserved[8];

@@ -14,7 +14,8 @@
 #include <memory.h>
 #include <malloc.h>
 #include <corecrt_startup.h>
-#include <thread_local.h>
+
+extern WINBOOL __mingw_TLScallback (HANDLE hDllHandle, DWORD reason, LPVOID reserved);
 
 #define FUNCS_PER_NODE 30
 
@@ -24,33 +25,31 @@ typedef struct TlsDtorNode {
   _PVFV funcs[FUNCS_PER_NODE];
 } TlsDtorNode;
 
-static TlsDtorNode **get_dtor_list_ptr (void)
-{
-  TlsDtorNode **dtor_list_ptr = __MINGW_ALLOC_THREAD_LOCAL_OR_NULL(TlsDtorNode*);
-  return dtor_list_ptr;
-}
+#ifndef __CRT_THREAD
+#ifdef HAVE_ATTRIBUTE_THREAD
+#define __CRT_THREAD	__declspec(thread)
+#else
+#define __CRT_THREAD    __thread
+#endif
+#endif
 
-static TlsDtorNode *get_dtor_list_head_ptr (void)
-{
-  TlsDtorNode *dtor_list_head_ptr = __MINGW_ALLOC_THREAD_LOCAL_OR_NULL(TlsDtorNode);
-  return dtor_list_head_ptr;
-}
+#define DISABLE_MS_TLS 1
+
+#if !defined (DISABLE_MS_TLS)
+static __CRT_THREAD TlsDtorNode *dtor_list;
+static __CRT_THREAD TlsDtorNode dtor_list_head;
+#endif
+
+void WINAPI __dyn_tls_dtor (HANDLE, DWORD, LPVOID);
 
 int __cdecl __tlregdtor (_PVFV);
 
 int __cdecl
 __tlregdtor (_PVFV func)
 {
-  TlsDtorNode **dtor_list_ptr = get_dtor_list_ptr();
-  TlsDtorNode *dtor_list_head_ptr = get_dtor_list_head_ptr();
-  if (!dtor_list_ptr || !dtor_list_head_ptr)
-    return -1;
-  #define dtor_list (*dtor_list_ptr)
-  #define dtor_list_head (*dtor_list_head_ptr)
-
   if (!func)
     return 0;
-
+#if !defined (DISABLE_MS_TLS)
   if (dtor_list == NULL)
     {
       dtor_list = &dtor_list_head;
@@ -68,40 +67,46 @@ __tlregdtor (_PVFV func)
       dtor_list->count = 0;
     }
   dtor_list->funcs[dtor_list->count++] = func;
-
+#endif
   return 0;
-  #undef dtor_list
-  #undef dtor_list_head
 }
 
-static void WINAPI
-__dyn_tls_dtor (HANDLE hDllHandle __attribute__((unused)), DWORD dwReason, LPVOID lpreserved __attribute__((unused)))
+void WINAPI
+__dyn_tls_dtor (HANDLE hDllHandle, DWORD dwReason, LPVOID lpreserved)
 {
+#if !defined (DISABLE_MS_TLS)
   TlsDtorNode *pnode, *pnext;
   int i;
-  TlsDtorNode **dtor_list_ptr = get_dtor_list_ptr();
-  if (!dtor_list_ptr)
-    return;
+#endif
 
   if (dwReason != DLL_THREAD_DETACH && dwReason != DLL_PROCESS_DETACH)
     return;
-
-  for (pnode = *dtor_list_ptr; pnode != NULL; pnode = pnext)
+  /* As TLS variables are detroyed already by DLL_THREAD_DETACH
+     call, we have to avoid access on the possible DLL_PROCESS_DETACH
+     call the already destroyed TLS vars.
+     TODO: The used local thread based variables have to be handled
+     manually, so that we can control their lifetime here.  */
+#if !defined (DISABLE_MS_TLS)
+  if (dwReason != DLL_PROCESS_DETACH)
     {
-      for (i = pnode->count - 1; i >= 0; --i)
+      for (pnode = dtor_list; pnode != NULL; pnode = pnext)
         {
-          if (pnode->funcs[i] != NULL)
-            (*pnode->funcs[i])();
+          for (i = pnode->count - 1; i >= 0; --i)
+	    {
+	      if (pnode->funcs[i] != NULL)
+	        (*pnode->funcs[i])();
+	    }
+          pnext = pnode->next;
+          if (pnext != NULL)
+	    free ((void *) pnode);
         }
-      pnext = pnode->next;
-      if (pnext != NULL)
-        free ((void *) pnode);
-      *dtor_list_ptr = pnext;
     }
+#endif
+  __mingw_TLScallback (hDllHandle, dwReason, lpreserved);
 }
 
 static _CRTALLOC(".CRT$XLD") PIMAGE_TLS_CALLBACK __xl_d = __dyn_tls_dtor;
 
 /* Force tlssup.c (_tls_used symbol for .tls linker section) to be linked.  */
 extern const IMAGE_TLS_DIRECTORY _tls_used;
-static __attribute__((destructor)) void _include_tls_used(void) { asm volatile ("" :: "r" (&_tls_used)); }
+static __attribute__((used)) const IMAGE_TLS_DIRECTORY *const _include_tls_used = &_tls_used;

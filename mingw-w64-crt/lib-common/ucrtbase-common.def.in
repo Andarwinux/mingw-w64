@@ -246,7 +246,7 @@ _aligned_realloc
 F_DEBUG(_aligned_realloc_dbg)
 _aligned_recalloc
 F_DEBUG(_aligned_recalloc_dbg)
-__msvcrt_assert DATA == _assert ; mingw-w64 provides _assert() function as wrapper around renamed __msvcrt_assert symbol
+_assert
 _atodbl
 _atodbl_l
 _atof_l
@@ -2424,7 +2424,7 @@ iswalpha
 iswascii
 iswblank
 iswcntrl
-__msvcrt_iswctype DATA == iswctype ; mingw-w64 provides real iswctype as a wrapper around renamed __msvcrt_iswctype
+iswctype
 iswdigit
 iswgraph
 iswlower
@@ -2609,7 +2609,7 @@ tmpnam
 tmpnam_s
 tolower
 toupper
-__msvcrt_towctrans DATA == towctrans ; mingw-w64 provides real towctrans as a wrapper around renamed __msvcrt_towctrans
+towctrans
 towlower
 towupper
 trunc

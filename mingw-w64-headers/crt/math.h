@@ -179,6 +179,7 @@ extern "C" {
 # define math_errhandling  (MATH_ERRNO | MATH_ERREXCEPT)
 #endif
 
+#ifdef _CRTBLD
   double __cdecl sin(double _X);
   double __cdecl cos(double _X);
   double __cdecl tan(double _X);
@@ -202,6 +203,7 @@ extern "C" {
   extern long double __cdecl fabsl (long double);
   extern double __cdecl fabs (double _X);
 
+/*
 #ifndef __CRT__NO_INLINE
 #if !defined (__ia64__)
   __CRT_INLINE float __cdecl fabsf (float x)
@@ -238,6 +240,7 @@ extern "C" {
   }
 #endif
 #endif
+*/
 
   double __cdecl ldexp(double _X,int _Y);
   double __cdecl frexp(double _X,int *_Y);
@@ -247,6 +250,8 @@ extern "C" {
   void __cdecl sincos (double __x, double *p_sin, double *p_cos);
   void __cdecl sincosl (long double __x, long double *p_sin, long double *p_cos);
   void __cdecl sincosf (float __x, float *p_sin, float *p_cos);
+
+#endif //_CRTBLD
 
 #ifndef _CRT_ABS_DEFINED
 #define _CRT_ABS_DEFINED
@@ -658,6 +663,7 @@ __mingw_choose_expr (                                         \
         __signbitl(x),                                          \
      __dfp_expansion(__signbit,(__builtin_trap(),x),x))))
 
+#ifdef _CRTBLD
 /* 7.12.4 Trigonometric functions: Double in C89 */
   extern float __cdecl sinf(float _X);
   extern long double __cdecl sinl(long double);
@@ -698,6 +704,8 @@ __mingw_choose_expr (                                         \
 #endif
   extern long double __cdecl tanhl(long double);
 
+#endif //_CRTBLD
+
 #if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 202311L) \
     || defined(_CRTBLD)
 /* 7.12.4.8 */
@@ -735,6 +743,8 @@ __mingw_choose_expr (                                         \
   float __cdecl tanpif(float _X);
   long double __cdecl tanpil(long double _X);
 #endif
+
+#ifdef _CRTBLD
 
 /* Inverse hyperbolic trig functions  */ 
 /* 7.12.5.1 */
@@ -838,7 +848,7 @@ __mingw_choose_expr (                                         \
   extern double __cdecl hypot (double, double) __MINGW_ATTRIB_DEPRECATED_MSVC2005; /* in libmoldname.a */
   extern float __cdecl hypotf (float x, float y);
 #if !defined(__CRT__NO_INLINE) && !defined(_UCRT)
-  __CRT_INLINE float __cdecl hypotf (float x, float y) { return (float) hypot ((double)x, (double)y);}
+  //__CRT_INLINE float __cdecl hypotf (float x, float y) { return (float) hypot ((double)x, (double)y);}
 #endif
   extern long double __cdecl hypotl (long double, long double);
 
@@ -942,6 +952,9 @@ __MINGW_EXTENSION long long __cdecl llrintl (long double);
   extern float __cdecl copysignf (float, float);
   extern long double __cdecl copysignl (long double, long double);
 
+#endif //_CRTBLD
+
+/*
 #ifndef __CRT__NO_INLINE
 #if !defined (__ia64__)
   __CRT_INLINE double __cdecl copysign (double x, double y)
@@ -960,6 +973,7 @@ __MINGW_EXTENSION long long __cdecl llrintl (long double);
   }
 #endif
 #endif
+*/
 
 /* 7.12.11.2 Return a NaN */
   extern double __cdecl nan(const char *tagp);
@@ -971,6 +985,8 @@ __MINGW_EXTENSION long long __cdecl llrintl (long double);
 #define _nanf() nanf("")
 #define _nanl() nanl("")
 #endif
+
+#ifdef _CRTBLD
 
 /* 7.12.11.3 */
   extern double __cdecl nextafter (double, double); /* in libmoldname.a */
@@ -1008,6 +1024,8 @@ __MINGW_EXTENSION long long __cdecl llrintl (long double);
   extern double __cdecl fma (double, double, double);
   extern float __cdecl fmaf (float, float, float);
   extern long double __cdecl fmal (long double, long double, long double);
+
+#endif //_CRTBLD
 
 /* 7.12.14 */
 /* 
@@ -1460,3 +1478,278 @@ int __cdecl isnand32(_Decimal32 _X);
 
 #endif /* End _MATH_H_ */
 
+#undef fpclassify
+#undef fpclassifyf
+#undef fpclassifyl
+#undef isfinite
+#undef isfinitef
+#undef isfinitel
+#undef isinf
+#undef isinff
+#undef isinfl
+#undef isnan
+#undef isnanf
+#undef isnanl
+#undef isnormal
+#undef isnormalf
+#undef isnormall
+#undef signbit
+#undef signbitf
+#undef signbitl
+
+#define fpclassify(x) __builtin_fpclassify(FP_NAN, FP_INFINITE, FP_NORMAL, FP_SUBNORMAL, FP_ZERO, x)
+#define fpclassifyf(x) __builtin_fpclassify(FP_NAN, FP_INFINITE, FP_NORMAL, FP_SUBNORMAL, FP_ZERO, x)
+#define fpclassifyl(x) __builtin_fpclassify(FP_NAN, FP_INFINITE, FP_NORMAL, FP_SUBNORMAL, FP_ZERO, x)
+#define isfinite(x) __builtin_isfinite(x)
+#define isfinitef(x) __builtin_isfinite(x)
+#define isfinitel(x) __builtin_isfinite(x)
+#define isinf(x) __builtin_isinf(x)
+#define isinff(x) __builtin_isinf(x)
+#define isinfl(x) __builtin_isinf(x)
+#define isnan(x) __builtin_isnan(x)
+#define isnanf(x) __builtin_isnan(x)
+#define isnanl(x) __builtin_isnan(x)
+#define isnormal(x) __builtin_isnormal(x)
+#define isnormalf(x) __builtin_isnormal(x)
+#define isnormall(x) __builtin_isnormal(x)
+#define signbit(x) __builtin_signbit(x)
+#define signbitf(x) __builtin_signbit(x)
+#define signbitl(x) __builtin_signbit(x)
+
+#if !defined(round_defined) && !defined(_CRTBLD)
+
+#ifdef __AVX512DQ__
+#include <immintrin.h>
+#endif
+
+__attribute__((always_inline,hot)) static inline double      acos(double x){return __builtin_elementwise_acos(x);}
+__attribute__((always_inline,hot)) static inline double      acosh(double x){return __builtin_acosh(x);}
+__attribute__((always_inline,hot)) static inline double      asin(double x){return __builtin_elementwise_asin(x);}
+__attribute__((always_inline,hot)) static inline double      asinh(double x){return __builtin_asinh(x);}
+__attribute__((always_inline,hot)) static inline double      atan(double x){return __builtin_elementwise_atan(x);}
+__attribute__((always_inline,hot)) static inline double      atan2(double y, double x){return __builtin_elementwise_atan2(y, x);}
+__attribute__((always_inline,hot)) static inline double      atanh(double x){return __builtin_atanh(x);}
+__attribute__((always_inline,hot)) static inline double      cbrt(double x){return __builtin_cbrt(x);}
+__attribute__((always_inline,hot)) static inline double      ceil(double x){return __builtin_elementwise_ceil(x);}
+__attribute__((always_inline,hot)) static inline double      copysign(double x, double y){return __builtin_elementwise_copysign(x, y);}
+__attribute__((always_inline,hot)) static inline double      cos(double x){return __builtin_elementwise_cos(x);}
+__attribute__((always_inline,hot)) static inline double      cosh(double x){return __builtin_elementwise_cosh(x);}
+__attribute__((always_inline,hot)) static inline double      erf(double x){return __builtin_erf(x);}
+__attribute__((always_inline,hot)) static inline double      erfc(double x){return __builtin_erfc(x);}
+__attribute__((always_inline,hot)) static inline double      exp(double x){return __builtin_elementwise_exp(x);}
+__attribute__((always_inline,hot)) static inline double      exp2(double x){return __builtin_elementwise_exp2(x);}
+__attribute__((always_inline,hot)) static inline double      expm1(double x){return __builtin_expm1(x);}
+__attribute__((always_inline,hot)) static inline double      fabs(double x){return __builtin_elementwise_abs(x);}
+__attribute__((always_inline,hot)) static inline double      fdim(double x, double y){return __builtin_fdim(x, y);}
+__attribute__((always_inline,hot)) static inline double      floor(double x){return __builtin_elementwise_floor(x);}
+__attribute__((always_inline,hot)) static inline double      fma(double x, double y, double z){return __builtin_elementwise_fma(x, y, z);}
+__attribute__((always_inline,hot)) static inline double      fmax(double x, double y){return __builtin_elementwise_maxnum(x, y);}
+__attribute__((always_inline,hot)) static inline double      fmin(double x, double y){return __builtin_elementwise_minnum(x, y);}
+__attribute__((always_inline,hot)) static inline double      fmod(double x, double y){return (x - __builtin_elementwise_trunc(x / y) * y);}
+#ifdef __AVX512DQ__
+__attribute__((always_inline,hot)) static inline double      frexp(double n, int *exp) {
+    __m128d num; num[0]=n;
+    const __mmask8 mask = ~_mm_fpclass_sd_mask(num, 0x1E);
+    *exp = _mm_maskz_cvttpd_epi32(mask, _mm_set1_pd(1) + _mm_maskz_getexp_pd(mask, num))[0];
+    return _mm_mask_getmant_pd(num, mask, num, _MM_MANT_NORM_p5_1, _MM_MANT_SIGN_src)[0];
+}
+#else
+__attribute__((always_inline,hot)) static inline double      frexp(double x, int *exp){return __builtin_frexp(x,exp);}
+#endif
+__attribute__((always_inline,hot)) static inline double      hypot(double x, double y){return __builtin_elementwise_sqrt(x*x+y*y);}
+__attribute__((always_inline,hot)) static inline double      ldexp(double x, int exp){return __builtin_elementwise_ldexp(x, exp);}
+__attribute__((always_inline,hot)) static inline double      lgamma(double x){return __builtin_lgamma(x);}
+__attribute__((always_inline,hot)) static inline double      log(double x){return __builtin_elementwise_log(x);}
+__attribute__((always_inline,hot)) static inline double      log10(double x){return __builtin_elementwise_log10(x);}
+__attribute__((always_inline,hot)) static inline double      log1p(double x){return __builtin_log1p(x);}
+__attribute__((always_inline,hot)) static inline double      log2(double x){return __builtin_elementwise_log2(x);}
+__attribute__((always_inline,hot)) static inline double      logb(double x){return __builtin_logb(x);}
+__attribute__((always_inline,hot)) static inline double      modf(double x, double *iptr){*iptr = __builtin_elementwise_trunc(x); return x - *iptr;}
+__attribute__((always_inline,hot)) static inline double      nearbyint(double x){return __builtin_elementwise_nearbyint(x);}
+__attribute__((always_inline,hot)) static inline double      nextafter(double x, double y){return __builtin_nextafter(x, y);}
+__attribute__((always_inline,hot)) static inline double      pow(double x, double y){return __builtin_elementwise_pow(x, y);}
+__attribute__((always_inline,hot)) static inline double      remainder(double x, double y){return __builtin_remainder(x, y);}
+__attribute__((always_inline,hot)) static inline double      remquo(double x, double y, int *z){return __builtin_remquo(x,y,z);}
+__attribute__((always_inline,hot)) static inline double      rint(double x){return __builtin_elementwise_rint(x);}
+__attribute__((always_inline,hot)) static inline double      round(double x){return __builtin_elementwise_round(x);}
+__attribute__((always_inline,hot)) static inline double      scalbln(double x, long n){return __builtin_elementwise_ldexp(x, n);}
+__attribute__((always_inline,hot)) static inline double      scalbn(double x, int n){return __builtin_elementwise_ldexp(x, n);}
+__attribute__((always_inline,hot)) static inline double      sin(double x){return __builtin_elementwise_sin(x);}
+__attribute__((always_inline,hot)) static inline double      sinh(double x){return __builtin_elementwise_sinh(x);}
+__attribute__((always_inline,hot)) static inline double      sqrt(double x){return __builtin_elementwise_sqrt(x);}
+__attribute__((always_inline,hot)) static inline double      tan(double x){return __builtin_elementwise_tan(x);}
+__attribute__((always_inline,hot)) static inline double      tanh(double x){return __builtin_elementwise_tanh(x);}
+__attribute__((always_inline,hot)) static inline double      tgamma(double x){return __builtin_tgamma(x);}
+__attribute__((always_inline,hot)) static inline double      trunc(double x){return __builtin_elementwise_trunc(x);}
+
+__attribute__((always_inline,hot)) static inline float       acosf(float x){return __builtin_elementwise_acos(x);}
+__attribute__((always_inline,hot)) static inline float       acoshf(float x){return __builtin_acoshf(x);}
+__attribute__((always_inline,hot)) static inline float       asinf(float x){return __builtin_elementwise_asin(x);}
+__attribute__((always_inline,hot)) static inline float       asinhf(float x){return __builtin_asinhf(x);}
+__attribute__((always_inline,hot)) static inline float       atan2f(float y, float x){return __builtin_elementwise_atan2(y, x);}
+__attribute__((always_inline,hot)) static inline float       atanf(float x){return __builtin_elementwise_atan(x);}
+__attribute__((always_inline,hot)) static inline float       atanhf(float x){return __builtin_atanhf(x);}
+__attribute__((always_inline,hot)) static inline float       cbrtf(float x){return __builtin_cbrtf(x);}
+__attribute__((always_inline,hot)) static inline float       ceilf(float x){return __builtin_elementwise_ceil(x);}
+__attribute__((always_inline,hot)) static inline float       copysignf(float x, float y){return __builtin_elementwise_copysign(x, y);}
+__attribute__((always_inline,hot)) static inline float       cosf(float x){return __builtin_elementwise_cos(x);}
+__attribute__((always_inline,hot)) static inline float       coshf(float x){return __builtin_elementwise_cosh(x);}
+__attribute__((always_inline,hot)) static inline float       erfcf(float x){return __builtin_erfcf(x);}
+__attribute__((always_inline,hot)) static inline float       erff(float x){return __builtin_erff(x);}
+__attribute__((always_inline,hot)) static inline float       exp2f(float x){return __builtin_elementwise_exp2(x);}
+__attribute__((always_inline,hot)) static inline float       expf(float x){return __builtin_elementwise_exp(x);}
+__attribute__((always_inline,hot)) static inline float       expm1f(float x){return __builtin_expm1f(x);}
+__attribute__((always_inline,hot)) static inline float       fabsf (float x){return __builtin_elementwise_abs(x);}
+__attribute__((always_inline,hot)) static inline float       fdimf(float x, float y){return __builtin_fdimf(x, y);}
+__attribute__((always_inline,hot)) static inline float       floorf(float x){return __builtin_elementwise_floor(x);}
+__attribute__((always_inline,hot)) static inline float       fmaf(float x, float y, float z){return __builtin_elementwise_fma(x, y, z);}
+__attribute__((always_inline,hot)) static inline float       fmaxf(float x, float y){return __builtin_elementwise_maxnum(x, y);}
+__attribute__((always_inline,hot)) static inline float       fminf(float x, float y){return __builtin_elementwise_minnum(x, y);}
+__attribute__((always_inline,hot)) static inline float       fmodf(float x, float y){return (x - __builtin_elementwise_trunc(x / y) * y);}
+#ifdef __AVX512DQ__
+__attribute__((always_inline,hot)) static inline float       frexpf(float n, int *exp) {
+    __m128 num; num[0]=n;
+    const __mmask8 mask = ~_mm_fpclass_ss_mask(num, 0x1E);
+    *exp = _mm_maskz_cvttps_epi32(mask, _mm_set1_ps(1) + _mm_maskz_getexp_ps(mask, num))[0];
+    return _mm_mask_getmant_ps(num, mask, num, _MM_MANT_NORM_p5_1, _MM_MANT_SIGN_src)[0];
+}
+#else
+__attribute__((always_inline,hot)) static inline float       frexpf(float x, int *exp){return __builtin_frexpf(x,exp);}
+#endif
+__attribute__((always_inline,hot)) static inline float       hypotf(float x, float y){return __builtin_elementwise_sqrt(x*x+y*y);}
+__attribute__((always_inline,hot)) static inline float       ldexpf(float x, int exp){return __builtin_elementwise_ldexp(x, exp);}
+__attribute__((always_inline,hot)) static inline float       lgammaf(float x){return __builtin_lgammaf(x);}
+__attribute__((always_inline,hot)) static inline float       log10f(float x){return __builtin_elementwise_log10(x);}
+__attribute__((always_inline,hot)) static inline float       log1pf(float x){return __builtin_log1pf(x);}
+__attribute__((always_inline,hot)) static inline float       log2f(float x){return __builtin_elementwise_log2(x);}
+__attribute__((always_inline,hot)) static inline float       logbf(float x){return __builtin_logbf(x);}
+__attribute__((always_inline,hot)) static inline float       logf(float x){return __builtin_elementwise_log(x);}
+__attribute__((always_inline,hot)) static inline float       modff(float x, float *iptr){*iptr = __builtin_elementwise_trunc(x); return x - *iptr;}
+__attribute__((always_inline,hot)) static inline float       nearbyintf(float x){return __builtin_elementwise_nearbyint(x);}
+__attribute__((always_inline,hot)) static inline float       nextafterf(float x, float y){return __builtin_nextafter(x, y);}
+__attribute__((always_inline,hot)) static inline float       powf(float x, float y){return __builtin_elementwise_pow(x, y);}
+__attribute__((always_inline,hot)) static inline float       remainderf(float x, float y){return __builtin_remainderf(x, y);}
+__attribute__((always_inline,hot)) static inline float       remquof(float x, float y, int *z){return __builtin_remquof(x,y,z);}
+__attribute__((always_inline,hot)) static inline float       rintf(float x){return __builtin_elementwise_rint(x);}
+__attribute__((always_inline,hot)) static inline float       roundf(float x){return __builtin_elementwise_round(x);}
+__attribute__((always_inline,hot)) static inline float       scalblnf(float x, long n){return __builtin_elementwise_ldexp(x, n);}
+__attribute__((always_inline,hot)) static inline float       scalbnf(float x, int n){return __builtin_elementwise_ldexp(x, n);}
+__attribute__((always_inline,hot)) static inline float       sinf(float x){return __builtin_elementwise_sin(x);}
+__attribute__((always_inline,hot)) static inline float       sinhf(float x){return __builtin_elementwise_sinh(x);}
+__attribute__((always_inline,hot)) static inline float       sqrtf(float x){return __builtin_elementwise_sqrt(x);}
+__attribute__((always_inline,hot)) static inline float       tanf(float x){return __builtin_elementwise_tan(x);}
+__attribute__((always_inline,hot)) static inline float       tanhf(float x){return __builtin_elementwise_tanh(x);}
+__attribute__((always_inline,hot)) static inline float       tgammaf(float x){return __builtin_tgammaf(x);}
+__attribute__((always_inline,hot)) static inline float       truncf(float x){return __builtin_elementwise_trunc(x);}
+
+__attribute__((always_inline,hot)) static inline long double acosl(long double x){return __builtin_elementwise_acos(x);}
+__attribute__((always_inline,hot)) static inline long double acoshl(long double x){return __builtin_acoshl(x);}
+__attribute__((always_inline,hot)) static inline long double asinl(long double x){return __builtin_elementwise_asin(x);}
+__attribute__((always_inline,hot)) static inline long double asinhl(long double x){return __builtin_asinhl(x);}
+__attribute__((always_inline,hot)) static inline long double atanl(long double x){return __builtin_elementwise_atan(x);}
+__attribute__((always_inline,hot)) static inline long double atan2l(long double y, long double x){return __builtin_elementwise_atan2(y, x);}
+__attribute__((always_inline,hot)) static inline long double atanhl(long double x){return __builtin_atanhl(x);}
+__attribute__((always_inline,hot)) static inline long double cbrtl(long double x){return __builtin_cbrtl(x);}
+__attribute__((always_inline,hot)) static inline long double ceill(long double x){return __builtin_elementwise_ceil(x);}
+__attribute__((always_inline,hot)) static inline long double copysignl(long double x, long double y){return __builtin_elementwise_copysign(x, y);}
+__attribute__((always_inline,hot)) static inline long double cosl(long double x){return __builtin_elementwise_cos(x);}
+__attribute__((always_inline,hot)) static inline long double coshl(long double x){return __builtin_elementwise_cosh(x);}
+__attribute__((always_inline,hot)) static inline long double erfl(long double x){return __builtin_erfl(x);}
+__attribute__((always_inline,hot)) static inline long double erfcl(long double x){return __builtin_erfcl(x);}
+__attribute__((always_inline,hot)) static inline long double expl(long double x){return __builtin_elementwise_exp(x);}
+__attribute__((always_inline,hot)) static inline long double exp2l(long double x){return __builtin_elementwise_exp2(x);}
+__attribute__((always_inline,hot)) static inline long double expm1l(long double x){return __builtin_expm1l(x);}
+__attribute__((always_inline,hot)) static inline long double fabsl(long double x){return __builtin_elementwise_abs(x);}
+__attribute__((always_inline,hot)) static inline long double fdiml(long double x, long double y){return __builtin_fdiml(x, y);}
+__attribute__((always_inline,hot)) static inline long double floorl(long double x){return __builtin_elementwise_floor(x);}
+__attribute__((always_inline,hot)) static inline long double fmal(long double x, long double y, long double z){return __builtin_elementwise_fma(x, y, z);}
+__attribute__((always_inline,hot)) static inline long double fmaxl(long double x, long double y){return __builtin_elementwise_maxnum(x, y);}
+__attribute__((always_inline,hot)) static inline long double fminl(long double x, long double y){return __builtin_elementwise_minnum(x, y);}
+__attribute__((always_inline,hot)) static inline long double fmodl(long double x, long double y){return (x - __builtin_elementwise_trunc(x / y) * y);}
+__attribute__((always_inline,hot)) static inline long double frexpl(long double x, int *exp){return __builtin_frexpl(x,exp);}
+__attribute__((always_inline,hot)) static inline long double hypotl(long double x, long double y){return __builtin_elementwise_sqrt(x*x+y*y);}
+__attribute__((always_inline,hot)) static inline long double ldexpl(long double x, int exp){return __builtin_elementwise_ldexp(x, exp);}
+__attribute__((always_inline,hot)) static inline long double lgammal(long double x){return __builtin_lgammal(x);}
+__attribute__((always_inline,hot)) static inline long double logl(long double x){return __builtin_elementwise_log(x);}
+__attribute__((always_inline,hot)) static inline long double log10l(long double x){return __builtin_elementwise_log10(x);}
+__attribute__((always_inline,hot)) static inline long double log1pl(long double x){return __builtin_log1pl(x);}
+__attribute__((always_inline,hot)) static inline long double log2l(long double x){return __builtin_elementwise_log2(x);}
+__attribute__((always_inline,hot)) static inline long double logbl(long double x){return __builtin_logbl(x);}
+__attribute__((always_inline,hot)) static inline long double modfl(long double x, long double *iptr){*iptr = __builtin_elementwise_trunc(x); return x - *iptr;}
+__attribute__((always_inline,hot)) static inline long double nearbyintl(long double x){return __builtin_elementwise_nearbyint(x);}
+__attribute__((always_inline,hot)) static inline long double nextafterl(long double x, long double y){return __builtin_nextafter(x, y);}
+__attribute__((always_inline,hot)) static inline long double powl(long double x, long double y){return __builtin_elementwise_pow(x, y);}
+__attribute__((always_inline,hot)) static inline long double remainderl(long double x, long double y){return __builtin_remainderl(x, y);}
+__attribute__((always_inline,hot)) static inline long double remquol(long double x, long double y, int *z){return __builtin_remquol(x,y,z);}
+__attribute__((always_inline,hot)) static inline long double rintl(long double x){return __builtin_elementwise_rint(x);}
+__attribute__((always_inline,hot)) static inline long double roundl(long double x){return __builtin_elementwise_round(x);}
+__attribute__((always_inline,hot)) static inline long double scalblnl(long double x, long n){return __builtin_elementwise_ldexp(x, n);}
+__attribute__((always_inline,hot)) static inline long double scalbnl(long double x, int n){return __builtin_elementwise_ldexp(x, n);}
+__attribute__((always_inline,hot)) static inline long double sinl(long double x){return __builtin_elementwise_sin(x);}
+__attribute__((always_inline,hot)) static inline long double sinhl(long double x){return __builtin_elementwise_sinh(x);}
+__attribute__((always_inline,hot)) static inline long double sqrtl(long double x){return __builtin_elementwise_sqrt(x);}
+__attribute__((always_inline,hot)) static inline long double tanl(long double x){return __builtin_elementwise_tan(x);}
+__attribute__((always_inline,hot)) static inline long double tanhl(long double x){return __builtin_elementwise_tanh(x);}
+__attribute__((always_inline,hot)) static inline long double tgammal(long double x){return __builtin_tgammal(x);}
+__attribute__((always_inline,hot)) static inline long double truncl(long double x){return __builtin_elementwise_trunc(x);}
+
+__attribute__((always_inline,hot)) static inline int         ilogb(double x){return __builtin_ilogb(x);}
+__attribute__((always_inline,hot)) static inline int         ilogbf(float x){return __builtin_ilogbf(x);}
+__attribute__((always_inline,hot)) static inline int         ilogbl(long double x){return __builtin_ilogbl(x);}
+
+__attribute__((always_inline,hot)) static inline long        lrint (double x){return __builtin_elementwise_rint(x);}
+__attribute__((always_inline,hot)) static inline long        lrintf (float x){return __builtin_elementwise_rint(x);}
+__attribute__((always_inline,hot)) static inline long        lrintl (long double x){return __builtin_elementwise_rint(x);}
+__attribute__((always_inline,hot)) static inline long        lround (double x){return __builtin_elementwise_round(x);}
+__attribute__((always_inline,hot)) static inline long        lroundf (float x){return __builtin_elementwise_round(x);}
+__attribute__((always_inline,hot)) static inline long        lroundl (long double x){return __builtin_elementwise_round(x);}
+
+__attribute__((always_inline,hot)) static inline long long   llrint (double x){return __builtin_elementwise_rint(x);}
+__attribute__((always_inline,hot)) static inline long long   llrintf (float x){return __builtin_elementwise_rint(x);}
+__attribute__((always_inline,hot)) static inline long long   llrintl (long double x){return __builtin_elementwise_rint(x);}
+__attribute__((always_inline,hot)) static inline long long   llround (double x){return __builtin_elementwise_round(x);}
+__attribute__((always_inline,hot)) static inline long long   llroundf (float x){return __builtin_elementwise_round(x);}
+__attribute__((always_inline,hot)) static inline long long   llroundl (long double x){return __builtin_elementwise_round(x);}
+
+__attribute__((always_inline,hot)) static inline void        sincos(double x, double *s, double *c){__builtin_sincos(x,s,c);}
+__attribute__((always_inline,hot)) static inline void        sincosf(float x, float *s, float *c){__builtin_sincosf(x,s,c);}
+
+#undef __builtin_lround
+#undef __builtin_lroundf
+#undef __builtin_llround
+#undef __builtin_llroundf
+
+#define __builtin_lround __builtin_elementwise_round
+#define __builtin_lroundf __builtin_elementwise_round
+#define __builtin_llround __builtin_elementwise_round
+#define __builtin_llroundf __builtin_elementwise_round
+
+#undef __builtin_scalbn
+#undef __builtin_scalbnf
+#undef __builtin_scalbln
+#undef __builtin_scalblnf
+
+#define __builtin_scalbn scalbn
+#define __builtin_scalbnf scalbnf
+#define __builtin_scalbln scalbln
+#define __builtin_scalblnf scalblnf
+
+#undef __builtin_hypot
+#undef __builtin_hypotf
+
+#define __builtin_hypot hypot
+#define __builtin_hypotf hypotf
+
+#undef __builtin_modf
+#undef __builtin_modff
+#undef __builtin_fmod
+#undef __builtin_fmodf
+
+#define __builtin_modf modf
+#define __builtin_modff modff
+#define __builtin_fmod fmod
+#define __builtin_fmodf fmodf
+
+#define round_defined
+
+#endif

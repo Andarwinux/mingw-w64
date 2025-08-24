@@ -22,7 +22,7 @@ extern "C" {
 #endif
 
 _CRTIMP void __cdecl _wassert(const wchar_t *_Message,const wchar_t *_File,unsigned _Line);
-void __cdecl _assert (const char *_Message, const char *_File, unsigned _Line);
+_CRTIMP void __cdecl _assert (const char *_Message, const char *_File, unsigned _Line);
 
 #ifdef __cplusplus
 }

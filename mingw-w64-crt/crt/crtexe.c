@@ -49,20 +49,19 @@ extern _PVFV __xc_z[];
 
 
 /* TLS initialization hook.  */
-const PIMAGE_TLS_CALLBACK __dyn_tls_init_callback __attribute__((common)); /* tentative */
+extern const PIMAGE_TLS_CALLBACK __dyn_tls_init_callback;
 
 extern int __mingw_app_type;
 
 static int argc;
+extern void __main(void);
 static _TCHAR **argv;
 static _TCHAR **envp;
 
 static int managedapp;
 static int has_cctor = 0;
 
-extern void __cdecl __mingw_do_global_ctors (void);
-extern void __cdecl __mingw_do_global_dtors (void);
-extern void _pei386_runtime_relocator (void);
+//extern void _pei386_runtime_relocator (void);
 static int duplicate_ppstrings (int ac, _TCHAR ***av);
 
 extern int _MINGW_INSTALL_DEBUG_MATHERR;
@@ -124,7 +123,7 @@ safe_flush (void)
 static int __tmainCRTStartup (void);
 
 int WinMainCRTStartup (void);
-__attribute__((used)) /* required due to GNU LD bug: https://sourceware.org/bugzilla/show_bug.cgi?id=30300 */
+//__attribute__((used)) /* required due to GNU LD bug: https://sourceware.org/bugzilla/show_bug.cgi?id=30300 */
 int WinMainCRTStartup (void)
 {
   __mingw_app_type = 1;
@@ -132,7 +131,7 @@ int WinMainCRTStartup (void)
 }
 
 int mainCRTStartup (void);
-__attribute__((used)) /* required due to GNU LD bug: https://sourceware.org/bugzilla/show_bug.cgi?id=30300 */
+//__attribute__((used)) /* required due to GNU LD bug: https://sourceware.org/bugzilla/show_bug.cgi?id=30300 */
 int mainCRTStartup (void)
 {
   __mingw_app_type = 0;
@@ -202,7 +201,7 @@ __tmainCRTStartup (void)
 	if (atexit (safe_flush) != 0)
 	  _amsg_exit (26); /* _RT_STDIOINIT */
 
-	_pei386_runtime_relocator ();
+	//_pei386_runtime_relocator ();
 	_set_invalid_parameter_handler (__mingw_invalidParameterHandler);
 	_fpreset ();
 
@@ -223,8 +222,8 @@ __tmainCRTStartup (void)
 	if (ret < 0)
 	  _amsg_exit (8); /* _RT_SPACEARG */
 
-	if (_MINGW_INSTALL_DEBUG_MATHERR == 1)
-	  __setusermatherr (_matherr);
+	//if (_MINGW_INSTALL_DEBUG_MATHERR == 1)
+	  //__setusermatherr (_matherr);
 
 	if (__globallocalestatus == -1)
 	  _configthreadlocale (-1);
@@ -247,8 +246,7 @@ __tmainCRTStartup (void)
 
 	SetUnhandledExceptionFilter (cpp_unhandled_exception_filter);
 	_initterm (__xc_a, __xc_z);
-	__mingw_do_global_ctors ();
-	atexit (__mingw_do_global_dtors);
+	__main (); /* C++ initialization. */
 
 	__native_startup_state = __initialized;
       }
