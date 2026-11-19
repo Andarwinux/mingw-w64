@@ -1518,6 +1518,10 @@ int __cdecl isnand32(_Decimal32 _X);
 
 #if !defined(round_defined) && !defined(_CRTBLD)
 
+#ifdef __AVX512DQ__
+#include <immintrin.h>
+#endif
+
 __attribute__((always_inline,hot)) static inline double      acos(double x){return __builtin_elementwise_acos(x);}
 __attribute__((always_inline,hot)) static inline double      acosh(double x){return __builtin_acosh(x);}
 __attribute__((always_inline,hot)) static inline double      asin(double x){return __builtin_elementwise_asin(x);}
@@ -1542,7 +1546,16 @@ __attribute__((always_inline,hot)) static inline double      fma(double x, doubl
 __attribute__((always_inline,hot)) static inline double      fmax(double x, double y){return __builtin_elementwise_maxnum(x, y);}
 __attribute__((always_inline,hot)) static inline double      fmin(double x, double y){return __builtin_elementwise_minnum(x, y);}
 __attribute__((always_inline,hot)) static inline double      fmod(double x, double y){return (x - __builtin_elementwise_trunc(x / y) * y);}
+#ifdef __AVX512DQ__
+__attribute__((always_inline,hot)) static inline double      frexp(double n, int *exp) {
+    __m128d num; num[0]=n;
+    const __mmask8 mask = ~_mm_fpclass_sd_mask(num, 0x1E);
+    *exp = _mm_maskz_cvttpd_epi32(mask, _mm_set1_pd(1) + _mm_maskz_getexp_pd(mask, num))[0];
+    return _mm_mask_getmant_pd(num, mask, num, _MM_MANT_NORM_p5_1, _MM_MANT_SIGN_src)[0];
+}
+#else
 __attribute__((always_inline,hot)) static inline double      frexp(double x, int *exp){return __builtin_frexp(x,exp);}
+#endif
 __attribute__((always_inline,hot)) static inline double      hypot(double x, double y){return __builtin_elementwise_sqrt(x*x+y*y);}
 __attribute__((always_inline,hot)) static inline double      ldexp(double x, int exp){return __builtin_elementwise_ldexp(x, exp);}
 __attribute__((always_inline,hot)) static inline double      lgamma(double x){return __builtin_lgamma(x);}
@@ -1593,7 +1606,16 @@ __attribute__((always_inline,hot)) static inline float       fmaf(float x, float
 __attribute__((always_inline,hot)) static inline float       fmaxf(float x, float y){return __builtin_elementwise_maxnum(x, y);}
 __attribute__((always_inline,hot)) static inline float       fminf(float x, float y){return __builtin_elementwise_minnum(x, y);}
 __attribute__((always_inline,hot)) static inline float       fmodf(float x, float y){return (x - __builtin_elementwise_trunc(x / y) * y);}
+#ifdef __AVX512DQ__
+__attribute__((always_inline,hot)) static inline float       frexpf(float n, int *exp) {
+    __m128 num; num[0]=n;
+    const __mmask8 mask = ~_mm_fpclass_ss_mask(num, 0x1E);
+    *exp = _mm_maskz_cvttps_epi32(mask, _mm_set1_ps(1) + _mm_maskz_getexp_ps(mask, num))[0];
+    return _mm_mask_getmant_ps(num, mask, num, _MM_MANT_NORM_p5_1, _MM_MANT_SIGN_src)[0];
+}
+#else
 __attribute__((always_inline,hot)) static inline float       frexpf(float x, int *exp){return __builtin_frexpf(x,exp);}
+#endif
 __attribute__((always_inline,hot)) static inline float       hypotf(float x, float y){return __builtin_elementwise_sqrt(x*x+y*y);}
 __attribute__((always_inline,hot)) static inline float       ldexpf(float x, int exp){return __builtin_elementwise_ldexp(x, exp);}
 __attribute__((always_inline,hot)) static inline float       lgammaf(float x){return __builtin_lgammaf(x);}
